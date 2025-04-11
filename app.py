@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import json
 
 # -------------------------
-# Emisyon Faktörleri (kg CO2)
+# Emisyon Faktörleri (kg CO2) - Referans Tablosu Verileri
 # -------------------------
 emission_factors = {
     "Elektrik": {
@@ -46,7 +46,6 @@ emission_factors = {
 # -------------------------
 st.set_page_config(page_title="KARBON-AT", page_icon="🌍", layout="wide")
 st.title("KARBON AYAK İZİ HESAP MAKİNESİ 🦊")
-st.write("İşletmenizin karbon ayak izini öğrenin, çevreci harekete siz de katılın.")
 
 # -------------------------
 # Sidebar
@@ -93,13 +92,83 @@ def get_general_recommendations(total):
 # -------------------------
 # Sekmeler
 # -------------------------
-tab1, tab2, tab3 = st.tabs(["Hesap Makinesi🧼", "Raporlar ve Öneriler💫", "Scoreboard 📈"])
+tab1, tab2, tab3, tab4 = st.tabs(["Anasayfa", "Hesap Makinesi", "Raporlar ve Öneriler", "Scoreboard "])
+
+# -------------------------
+# ANASAYFA
+# -------------------------
+with tab1:
+    st.markdown("""
+    <style>
+        /* Main container styling */
+        .main {
+            background: linear-gradient(135deg, black);
+    
+        }
+        
+        /* Custom card styling */
+        .stMarkdown div {
+            
+            border-radius: 10px;
+            
+            margin-bottom: 1rem;
+            transition: transform 0.2s ease-in-out;
+            color: white;
+
+        }
+        
+        .stMarkdown div:hover {
+            transform: translateY(-2px);
+        }
+        
+        /* Hero section styling */
+        .hero-section {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            
+        }
+        
+        /* Feature card styling */
+        .feature-card {
+            padding: 20px;
+            border-radius: 10px;
+            
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        /* Genel buton stilleri */
+        .stButton button {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 0.5rem 2rem;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .stButton button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+    </style>
+    <div class="hero-section">
+        <h1> KARBONUNU HESAPLA GELECEĞİNİ PLANLA</h1>
+        <p>KarbonAt; otellerin enerji, su, gıda ve doğalgaz gibi alanlardaki karbon emisyonlarını hesaplayarak ve yönetmelerine yardımcı olarak sürdürülebilirlik hareketine katkı sağlar.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
 
 # -------------------------
 # Hesaplama Sekmesi
 # -------------------------
-with tab1:
-    company_name = st.text_input("İşletme Adınızı Giriniz *")
+with tab2:
+    company_name = st.text_input("İşletme Adınızı Giriniz *", placeholder = " İşletme adınızı girin. Örn. 'Teknofest Suit Otel'")
     st.header("Harcama Miktarlarınızı Girin")
 
     user_inputs = {}
@@ -180,7 +249,7 @@ with tab1:
 
 # Raporlar ve Öneriler Sekmesi
 
-with tab2:
+with tab3:
     if 'latest_result' in st.session_state:
         results = st.session_state.latest_result
         st.header(results["Company"] + " 🚀")
@@ -234,7 +303,7 @@ with tab2:
 
 # Scoreboard Sekmesi
 
-with tab3:
+with tab4:
     st.header("🏆 Scoreboard")
     if st.session_state.scoreboard:
         df_scoreboard = pd.DataFrame(st.session_state.scoreboard)
