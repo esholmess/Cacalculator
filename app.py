@@ -45,7 +45,27 @@ emission_factors = {
 # Sayfa Ayarı
 # -------------------------
 st.set_page_config(page_title="KARBON-AT", page_icon="🌍", layout="wide")
+# Sayfa Stilleri
+st.markdown(
+    """
+    <style>
+        .main{
+        background-color: #FDFBEE;
+        }
+        p, h1, h2, h3, h4, h5, h6 {
+            color: black;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        [data-testid="stSidebar"]{
+        background-color: #57B4BA;
+        color: #015551
+        }
+
+    </style>
+""", unsafe_allow_html = True
+)
 st.title("KARBON AYAK İZİ HESAP MAKİNESİ 🦊")
+
 
 # -------------------------
 # Sidebar
@@ -103,14 +123,13 @@ with tab1:
         /* Main container styling */
         .main {
             background: linear-gradient(135deg, black);
+            color:#015551
     
         }
         
         /* Custom card styling */
         .stMarkdown div {
-            
             border-radius: 10px;
-            
             margin-bottom: 1rem;
             transition: transform 0.2s ease-in-out;
             color: white;
@@ -129,8 +148,9 @@ with tab1:
             color: white;
             border-radius: 15px;
             margin-bottom: 2rem;
-            
         }
+        .hero-section h1, h2, h3, p{
+                color:white}
         
         /* Feature card styling */
         .feature-card {
@@ -156,11 +176,25 @@ with tab1:
             transform: scale(1.05);
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
+        #guide{
+                text-align: left
+            }
     </style>
     <div class="hero-section">
         <h1> KARBONUNU HESAPLA GELECEĞİNİ PLANLA</h1>
         <p>KarbonAt; otellerin enerji, su, gıda ve doğalgaz gibi alanlardaki karbon emisyonlarını hesaplayarak ve yönetmelerine yardımcı olarak sürdürülebilirlik hareketine katkı sağlar.</p>
     </div>
+    <div class="hero-section" id="guide">
+                <h3>
+                Karbon Ayakizinizi hesaplamak için:</h3><p>
+                <ul>
+                <li>Sizden istenen verileri aylık harcama raporlarınıza dayanarak giriniz. (Örn: Su faturası)</li>
+                <li>Ardından formun sonundaki butona tıklayınız</li>
+                <li>Raporlar ve Öneriler sekmesinde hesaplanmış karbon ayakizinizi ve önerilerinizi bulacaksınız :)</li>
+                <li>Scoreboardda ise yerinizi alabilirsiniz</li>
+                </ul>
+                </p>
+                </div>
     """, unsafe_allow_html=True)
 
 
