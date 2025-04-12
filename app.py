@@ -149,9 +149,7 @@ with tab1:
             border-radius: 15px;
             margin-bottom: 2rem;
         }
-        .hero-section h1, h2, h3, p{
-                color:white}
-        
+
         /* Feature card styling */
         .feature-card {
             padding: 20px;
