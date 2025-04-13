@@ -50,14 +50,15 @@ st.markdown(
     """
     <style>
         .main{
-        background-color: #FDFBEE;
+        background: linear-gradient(to bottom, black, #18230F);
+        
         }
-        p, h1, h2, h3, h4, h5, h6 {
-            color: black;
+        p, h1, h2, h3, h4, h5, h6, ul {
+            color: white;
             font-family: 'Segoe UI', sans-serif;
         }
         [data-testid="stSidebar"]{
-        background-color: #57B4BA;
+        background:linear-gradient(to top, #1F7D53, #255F38);
         color: #015551
         }
 
@@ -120,8 +121,7 @@ tab1, tab2, tab3, tab4 = st.tabs(["Anasayfa", "Hesap Makinesi", "Raporlar ve Ön
 with tab1:
     st.markdown("""
     <style>
-        /* Main container styling */
-        
+       
         /* Custom card styling */
         .stMarkdown div {
             border-radius: 10px;
@@ -132,27 +132,24 @@ with tab1:
         }
         
         .stMarkdown div:hover {
-            transform: translateY(-2px);
+            transform: translateY(-1px);
         }
         
         /* Hero section styling */
         .hero-section {
-            text-align: center;
+            text-align: justify;
             padding: 2rem;
             background: linear-gradient(45deg, #28a745, #20c997);
             color: white;
             border-radius: 15px;
             margin-bottom: 2rem;
+            display:flex;
+            flex-direction: column;
+            align-items:center;
+            justify-content:center
         }
 
-        /* Feature card styling */
-        .feature-card {
-            padding: 20px;
-            border-radius: 10px;
-            
-            text-align: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
+
         
         /* Genel buton stilleri */
         .stButton button {
@@ -170,16 +167,24 @@ with tab1:
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
         #guide{
-                text-align: left
+                text-align: left;
+                align-items: center;
+                display:flex;
+                flex-direction: column;
             }
+
+
+        #guide h3{
+                margin-bottom: -30px}
+
     </style>
     <div class="hero-section">
-        <h1> KARBONUNU HESAPLA GELECEĞİNİ PLANLA</h1>
+        <h2> KARBONUNU HESAPLA GELECEĞİNİ PLANLA</h2>
         <p>KarbonAt; otellerin enerji, su, gıda ve doğalgaz gibi alanlardaki karbon emisyonlarını hesaplayarak ve yönetmelerine yardımcı olarak sürdürülebilirlik hareketine katkı sağlar.</p>
     </div>
     <div class="hero-section" id="guide">
                 <h3>
-                Karbon Ayakizinizi hesaplamak için:</h3><p>
+                KARBONAT'I KULLANMAK İÇİN:</h3><p>
                 <ul>
                 <li>Sizden istenen verileri aylık harcama raporlarınıza dayanarak giriniz. (Örn: Su faturası)</li>
                 <li>Ardından formun sonundaki butona tıklayınız</li>
