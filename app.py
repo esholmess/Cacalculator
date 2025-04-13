@@ -121,11 +121,6 @@ with tab1:
     st.markdown("""
     <style>
         /* Main container styling */
-        .main {
-            background: linear-gradient(135deg, black);
-            color:#015551
-    
-        }
         
         /* Custom card styling */
         .stMarkdown div {
