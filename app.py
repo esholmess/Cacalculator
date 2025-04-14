@@ -61,11 +61,13 @@ st.markdown(
         background:linear-gradient(to top, #1F7D53, #255F38);
         color: #015551
         }
+        [data-testid="stTabs"]{
+        }
 
     </style>
+    <h3 style="margin-bottom: -40px">KARBON-AT 🦊</h3>
 """, unsafe_allow_html = True
 )
-st.title("KARBON AYAK İZİ HESAP MAKİNESİ 🦊")
 
 
 # -------------------------
@@ -113,7 +115,7 @@ def get_general_recommendations(total):
 # -------------------------
 # Sekmeler
 # -------------------------
-tab1, tab2, tab3, tab4 = st.tabs(["Anasayfa", "Hesap Makinesi", "Raporlar ve Öneriler", "Scoreboard "])
+tab1, tab2, tab3, tab4 = st.tabs(["🏠", "Hesap Makinesi", "Rapor & Öneriler", "🏆"])
 
 # -------------------------
 # ANASAYFA
@@ -122,36 +124,38 @@ with tab1:
     st.markdown("""
     <style>
        
-        /* Custom card styling */
         .stMarkdown div {
             border-radius: 10px;
             margin-bottom: 1rem;
             transition: transform 0.2s ease-in-out;
             color: white;
 
+            
+
         }
-        
         .stMarkdown div:hover {
             transform: translateY(-1px);
         }
-        
-        /* Hero section styling */
-        .hero-section {
+        .banner-container{
+            display:flex;
+            flex-direction: column;
+            justify-content:center;
+            align-items:center;}
+        .banner {
             text-align: justify;
             padding: 2rem;
-            background: linear-gradient(45deg, #28a745, #20c997);
+            background: linear-gradient(45deg, #28a74683, #11a0758f);
             color: white;
-            border-radius: 15px;
-            margin-bottom: 2rem;
+            border-radius: 10px;
             display:flex;
             flex-direction: column;
             align-items:center;
-            justify-content:center
+            justify-content:center;
+            font-size:15px;
+            width:80vw
+            
         }
 
-
-        
-        /* Genel buton stilleri */
         .stButton button {
             background: linear-gradient(45deg, #28a745, #20c997);
             color: white;
@@ -169,8 +173,10 @@ with tab1:
         #guide{
                 text-align: left;
                 align-items: center;
+                justify-content:center;
                 display:flex;
                 flex-direction: column;
+                gap:-5px
             }
 
 
@@ -178,20 +184,21 @@ with tab1:
                 margin-bottom: -30px}
 
     </style>
-    <div class="hero-section">
-        <h2> KARBONUNU HESAPLA GELECEĞİNİ PLANLA</h2>
+    <div class="banner-container">
+    <div class="banner">
+        <h3> KARBONUNU HESAPLA GELECEĞİNİ PLANLA</h3>
         <p>KarbonAt; otellerin enerji, su, gıda ve doğalgaz gibi alanlardaki karbon emisyonlarını hesaplayarak ve yönetmelerine yardımcı olarak sürdürülebilirlik hareketine katkı sağlar.</p>
     </div>
-    <div class="hero-section" id="guide">
-                <h3>
-                KARBONAT'I KULLANMAK İÇİN:</h3><p>
+    <div class="banner" id="guide">
+                <h3>KarbonAT'ı kullanmaya başla:</h3><p>
                 <ul>
-                <li>Sizden istenen verileri aylık harcama raporlarınıza dayanarak giriniz. (Örn: Su faturası)</li>
-                <li>Ardından formun sonundaki butona tıklayınız</li>
-                <li>Raporlar ve Öneriler sekmesinde hesaplanmış karbon ayakizinizi ve önerilerinizi bulacaksınız :)</li>
-                <li>Scoreboardda ise yerinizi alabilirsiniz</li>
+                <p>- Sizden istenen verileri aylık harcama raporlarınıza dayanarak giriniz. (Örn: Su faturası)</p>
+                <p>- Ardından formun sonundaki butona tıklayınız</p>
+                <p>- Raporlar ve Öneriler sekmesinde hesaplanmış karbon ayakizinizi ve önerilerinizi bulacaksınız :)</p>
+                <p>- Scoreboardda ise yerinizi alabilirsiniz</p>
                 </ul>
                 </p>
+                </div>
                 </div>
     """, unsafe_allow_html=True)
 
