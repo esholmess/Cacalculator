@@ -152,9 +152,12 @@ with tab1:
             align-items:center;
             justify-content:center;
             font-size:15px;
-            width:80vw
+            width:70vw;
+            
             
         }
+        .banner p {
+                max-width: 700px}
 
         .stButton button {
             background: linear-gradient(45deg, #28a745, #20c997);
@@ -176,7 +179,8 @@ with tab1:
                 justify-content:center;
                 display:flex;
                 flex-direction: column;
-                gap:-5px
+                gap:-5px;
+                
             }
 
 
@@ -186,6 +190,7 @@ with tab1:
     </style>
     <div class="banner-container">
     <div class="banner">
+        <h1>🌍</h1>
         <h3> KARBONUNU HESAPLA GELECEĞİNİ PLANLA</h3>
         <p>KarbonAt; otellerin enerji, su, gıda ve doğalgaz gibi alanlardaki karbon emisyonlarını hesaplayarak ve yönetmelerine yardımcı olarak sürdürülebilirlik hareketine katkı sağlar.</p>
     </div>
