@@ -212,74 +212,87 @@ with tab1:
 # Hesaplama Sekmesi
 # -------------------------
 with tab2:
-    company_name = st.text_input("İşletme Adınızı Giriniz *", placeholder = " İşletme adınızı girin. Örn. 'Teknofest Suit Otel'")
-    st.header("Harcama Miktarlarınızı Girin")
+    st.markdown("""
+        <style>
+        h3 {
+            margin-bottom: -1rem;
+            margin-top: 0.5rem
+        }
+        .stNumberInput {
+            margin-top: -0.5rem;
+        }
+        </style>
+        <h3>🌍 HARCAMA GİRİŞİ</h3>
+        <p>Karbon ayakizi hesaplaması için aşağıdaki formda sizden istenen verileri giriniz. 🌱</p>
+    """, unsafe_allow_html=True)
 
-    user_inputs = {}
-    total_footprint = 0
-    category_footprints = {}
+    with st.form("carbon_form"):
+        company_name = st.text_input("🏢 İşletme Adınızı Giriniz *", placeholder="Örn. Teknofest Suit Otel")
 
-    # Elektrik
-    st.subheader("Elektrik")
-    elektrik_total = 0
-    user_inputs["Elektrik"] = {}
-    for item, factor in emission_factors["Elektrik"].items():
-        amount = st.number_input(f"{item} tüketimi", min_value=0.0, value=0.0, key="Elektrik_"+item)
-        footprint = amount * factor
-        user_inputs["Elektrik"][item] = footprint
-        elektrik_total += footprint
-    category_footprints["Elektrik"] = elektrik_total
-    total_footprint += elektrik_total
+        st.markdown("### 💡 Elektrik Tüketimi")
+        with st.container():
+            elektrik_total = 0
+            user_inputs = {"Elektrik": {}}
+            for item, factor in emission_factors["Elektrik"].items():
+                amount = st.number_input(f"{item} (kWh)", min_value=0.0, value=0.0, key="Elektrik_" + item)
+                footprint = amount * factor
+                user_inputs["Elektrik"][item] = footprint
+                elektrik_total += footprint
 
-    # Doğal Gaz
-    st.subheader("Doğal Gaz")
-    gaz_total = 0
-    user_inputs["Doğal Gaz"] = {}
-    for item, factor in emission_factors["Doğal Gaz"].items():
-        amount = st.number_input(f"{item} tüketimi", min_value=0.0, value=0.0, key="Gaz_"+item)
-        footprint = amount * factor
-        user_inputs["Doğal Gaz"][item] = footprint
-        gaz_total += footprint
-    category_footprints["Doğal Gaz"] = gaz_total
-    total_footprint += gaz_total
+        st.markdown("### 🔥 Doğal Gaz Tüketimi")
+        with st.container():
+            gaz_total = 0
+            user_inputs["Doğal Gaz"] = {}
+            for item, factor in emission_factors["Doğal Gaz"].items():
+                amount = st.number_input(f"{item} (m³)", min_value=0.0, value=0.0, key="Gaz_" + item)
+                footprint = amount * factor
+                user_inputs["Doğal Gaz"][item] = footprint
+                gaz_total += footprint
 
-    # Su
-    st.subheader("Su")
-    su_total = 0
-    user_inputs["Su"] = {}
-    for item, factor in emission_factors["Su"].items():
-        amount = st.number_input(f"{item} tüketimi", min_value=0.0, value=0.0, key="Su_"+item)
-        footprint = amount * factor
-        user_inputs["Su"][item] = footprint
-        su_total += footprint
-    category_footprints["Su"] = su_total
-    total_footprint += su_total
+        st.markdown("### 🚿 Su Kullanımı")
+        with st.container():
+            su_total = 0
+            user_inputs["Su"] = {}
+            for item, factor in emission_factors["Su"].items():
+                amount = st.number_input(f"{item} (m³)", min_value=0.0, value=0.0, key="Su_" + item)
+                footprint = amount * factor
+                user_inputs["Su"][item] = footprint
+                su_total += footprint
 
-    # Atık Yönetimi
-    st.subheader("Atık Yönetimi")
-    atik_total = 0
-    user_inputs["Atık Yönetimi"] = {}
-    for item, factor in emission_factors["Atık Yönetimi"].items():
-        amount = st.number_input(f"{item} miktarı", min_value=0.0, value=0.0, key="Atik_"+item)
-        footprint = amount * factor
-        user_inputs["Atık Yönetimi"][item] = footprint
-        atik_total += footprint
-    category_footprints["Atık Yönetimi"] = atik_total
-    total_footprint += atik_total
+        st.markdown("### 🍽️ Gıda Tüketimi")
+        with st.container():
+            gida_total = 0
+            user_inputs["Gıda Tüketimi"] = {}
+            for item, factor in emission_factors["Gıda Tüketimi"].items():
+                amount = st.number_input(f"{item} (kg)", min_value=0.0, value=0.0, key="Gida_" + item)
+                footprint = amount * factor
+                user_inputs["Gıda Tüketimi"][item] = footprint
+                gida_total += footprint
 
-    # Gıda Tüketimi
-    st.subheader("Gıda Tüketimi")
-    gida_total = 0
-    user_inputs["Gıda Tüketimi"] = {}
-    for item, factor in emission_factors["Gıda Tüketimi"].items():
-        amount = st.number_input(f"{item} tüketimi", min_value=0.0, value=0.0, key="Gida_"+item)
-        footprint = amount * factor
-        user_inputs["Gıda Tüketimi"][item] = footprint
-        gida_total += footprint
-    category_footprints["Gıda Tüketimi"] = gida_total
-    total_footprint += gida_total
+        st.markdown("### ♻️ Atık Yönetimi")
+        with st.container():
+            atik_total = 0
+            user_inputs["Atık Yönetimi"] = {}
+            for item, factor in emission_factors["Atık Yönetimi"].items():
+                amount = st.number_input(f"{item} (kg)", min_value=0.0, value=0.0, key="Atik_" + item)
+                footprint = amount * factor
+                user_inputs["Atık Yönetimi"][item] = footprint
+                atik_total += footprint
 
-    if st.button("Karbon Ayak İzini Hesapla") and company_name:
+
+
+        hesapla = st.form_submit_button("🌍 Karbon Ayak İzini Hesapla")
+
+    if hesapla and company_name:
+        total_footprint = elektrik_total + gaz_total + su_total + atik_total + gida_total
+        category_footprints = {
+            "Elektrik": elektrik_total,
+            "Doğal Gaz": gaz_total,
+            "Su": su_total,
+            "Atık Yönetimi": atik_total,
+            "Gıda Tüketimi": gida_total
+        }
+
         st.session_state.latest_result = {
             "Company": company_name,
             **category_footprints,
@@ -288,7 +301,10 @@ with tab2:
         st.session_state.latest_inputs = user_inputs
         st.session_state.latest_categories = category_footprints
         st.session_state.scoreboard.append(st.session_state.latest_result)
-        st.success("Karbon ayak izi hesaplandı!")
+        st.success("✅ Karbon ayak izi başarıyla hesaplandı!")
+
+    elif hesapla and not company_name:
+        st.error("İşletme İsminizi Giriniz")
 
 
 # Raporlar ve Öneriler Sekmesi
