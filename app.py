@@ -4,7 +4,8 @@ import numpy as np
 import time
 import matplotlib.pyplot as plt
 import json
-
+from downloadpdf import save_as_pdf
+import datetime
 # -------------------------
 # Emisyon Faktörleri (kg CO2) - Referans Tablosu Verileri
 # -------------------------
@@ -44,11 +45,8 @@ emission_factors = {
     }
 }
 
-# -------------------------
-# Sayfa Ayarı
-# -------------------------
-st.set_page_config(page_title="KARBON-AT", page_icon="🌍", layout="wide")
-# Sayfa Stilleri
+
+st.set_page_config(page_title="KARBON-AT", page_icon="🌍", layout="wide") #sayfa ayarı
 st.markdown(
     """
     <style>
@@ -61,29 +59,46 @@ st.markdown(
             font-family: 'Segoe UI', sans-serif;
         }
         [data-testid="stSidebar"]{
-        background:linear-gradient(to top, #1F7D53, #255F38);
+        background:linear-gradient(to top, #006d57, #255F38); 
         color: #015551
         }
-        [data-testid="stTabs"]{
-        }
+
 
     </style>
-    <h3 style="margin-bottom: -40px">KARBON-AT 🦊</h3>
+    <h2 style="margin-bottom: -40px">🍂KARBON<span style="color:rgb(255, 225, 183)">AT</span></h2>
+    
 """, unsafe_allow_html = True
 )
 
 
-# -------------------------
-# Sidebar
-# -------------------------
-with st.sidebar:
-    st.header("Hakkında")
+
+with st.sidebar: #sidebar ayarları
+    st.header("HAKKINDA")
     st.write("""
-        KarbonAT size daha sürdürülebilir bir işletme olma konusunda yol gösterir!:
-        - Karbon Ayakizinizi hesaplayın
-        - Öneriler Alın
-        - Sıralamanızı öğrenin
+        KarbonAT size daha sürdürülebilir bir işletme olma konusunda yol gösterir!
     """)
+    st.markdown("""
+        <style>
+                #sidebarh3{
+                margin-top: -5px;
+                }
+                #sidebarul{
+                margin-right:25px;
+                text-align:justify
+                }
+                </style>
+        <h3 id="sidebarh3">KarbonAT'ı kullanmaya başla:</h3><p>
+        <ul id="sidebarul">
+        <li> Sizden istenen verileri aylık harcama raporlarınıza dayanarak giriniz. (Örn: Su faturası)</li>
+        <li> Ardından formun sonundaki butona tıklayınız</li>
+        <li> Raporlar ve Öneriler sekmesinde hesaplanmış karbon ayakizinizi ve önerilerinizi bulacaksınız :)</li>
+        <li> Scoreboardda ise yerinizi alabilirsiniz</li>
+        </ul>
+        </p>
+        </div>
+        </div>
+
+    """,unsafe_allow_html=True)
 
 if 'scoreboard' not in st.session_state:
     st.session_state.scoreboard = []
@@ -115,15 +130,11 @@ def get_general_recommendations(total):
 
 
 
-# -------------------------
-# Sekmeler
-# -------------------------
-tab1, tab2, tab3, tab4 = st.tabs(["🏠", "Hesap Makinesi", "Rapor & Öneriler", "🏆"])
+tab1, tab2, tab3, tab4 = st.tabs(["🏠", "Hesap Makinesi", "Rapor & Öneriler", "🏆"]) #sekmeler
 
-# -------------------------
-# ANASAYFA
-# -------------------------
-with tab1:
+with tab1: #ana sayfa
+   
+
     st.markdown("""
     <style>
        
@@ -191,7 +202,6 @@ with tab1:
     </style>
     <div class="banner-container">
     <div class="banner">
-        <h1>🌍</h1>
         <h3> KARBONUNU HESAPLA GELECEĞİNİ PLANLA</h3>
         <p>KarbonAt; otellerin enerji, su, gıda ve doğalgaz gibi alanlardaki karbon emisyonlarını hesaplayarak ve yönetmelerine yardımcı olarak sürdürülebilirlik hareketine katkı sağlar.</p>
     </div>
@@ -209,10 +219,8 @@ with tab1:
     """, unsafe_allow_html=True)
 
 
-# -------------------------
-# Hesaplama Sekmesi
-# -------------------------
-with tab2:
+
+with tab2: #hesap makinesi sekmesi
     st.markdown("""
         <style>
         h3 {
@@ -221,19 +229,53 @@ with tab2:
         }
         .stNumberInput {
             margin-top: -0.5rem;
+ 
         }
+        .stForm {
+            background-color: rgba(0, 174, 128, 0.1);  
+            margin: 0.4rem 1rem;             
+        }
+        .form_title {
+                margin: 0rem 1rem
+        }
+        #formp {
+                margin-top: -0.7rem
+                }
+
+         
+        }
+        #form {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;}
+
         </style>
-        <h3>🌍 HARCAMA GİRİŞİ</h3>
-        <p>Karbon ayakizi hesaplaması için aşağıdaki formda sizden istenen verileri giriniz. 🌱</p>
-    """, unsafe_allow_html=True)
+        <div id= "form">
+        <h3 class = "form_title">🌍 HARCAMA GİRİŞİ</h3>
+        <p class="form_title" id="formp">Karbon ayakizi hesaplaması için aşağıdaki formda sizden istenen verileri giriniz. 🌱</p>
+        </div>
+                
+                """, unsafe_allow_html=True)
 
-    with st.form("carbon_form"):
 
-        with st.expander(" 🏢Şirket Bilgileri"):
-            company_name = st.text_input("🏢 İşletme Adınızı Giriniz *", placeholder="Örn. Teknofest Suit Otel")
-            date_input = st.text_input("Bulunduğunuz Ayı ve Yılı Girin", placeholder="Tarihi girin")
-            customer_number = st.number_input("Verilerin ait olduğu tarihe ilişkin müşteri sayısını giriniz")
-            
+    with st.form("carbon_form"): # şirket verisi ve hesaplama için harcama verileri girişleri
+
+  
+        with st.expander("🏢 İŞLETME BİLGİLERİ *"):
+                company_name = st.text_input("İşletme Adı", placeholder="Örn. Teknofest Suit Otel")
+                col1, col2 = st.columns(2)
+                with col1:
+                    date_input = st.date_input("Bulunduğunuz Ayı ve Yılı Girin", datetime.date.today())
+                with col2:
+                    customer_number = st.number_input("Verilerin ait olduğu tarihe ilişkin müşteri sayısını giriniz", min_value=1, step=1)
+
+                col3, col4 = st.columns(2)
+                with col3:
+                    metrekare_number = st.number_input("İşletmenizin toplam metrekare sayısını giriniz", min_value=1, step=1)
+                with col4:
+                    room_number =  st.number_input("İşletmenizin toplam oda sayısını giriniz", min_value=1, step=1)
+        
         with st.expander("🔌 Elektrik Tüketimi"):
                 elektrik_total = 0
                 user_inputs = {"Elektrik": {}}
@@ -282,7 +324,7 @@ with tab2:
 
 
 
-        hesapla = st.form_submit_button("🌍 Karbon Ayak İzini Hesapla")
+        hesapla = st.form_submit_button("🌍 Karbon Ayak İzini Hesapla") # verileri gönderme (submitleme) butonu
 
     if hesapla and company_name:
         total_footprint = elektrik_total + gaz_total + su_total + atik_total + gida_total
@@ -299,7 +341,7 @@ with tab2:
             "Company": company_name,
             **category_footprints,
             "Toplam": total_footprint,
-            "kisibasi" : footprint_kisibasi
+            "Kisi Basi" : footprint_kisibasi
         }
         st.session_state.latest_inputs = user_inputs
         st.session_state.latest_categories = category_footprints
@@ -308,6 +350,8 @@ with tab2:
 
     elif hesapla and not company_name:
         st.error("İşletme İsminizi Giriniz")
+    elif hesapla and not customer_number:
+        st.error("Müşteri sayısını giriniz - Müşteri sayısı en az 1 olmalıdır.")
 
 
 # Raporlar ve Öneriler Sekmesi
@@ -316,10 +360,10 @@ with tab3:
     if 'latest_result' in st.session_state:
         results = st.session_state.latest_result
         st.header(results["Company"] + " 🚀")
-        st.subheader("Karbon Ayak İzi Raporu")
+        st.header("Karbon Ayak İzi Raporu")
 
         for category, items in st.session_state.latest_inputs.items():
-            st.markdown(f"### {category}")
+            st.markdown(f"#### {category}")
             df = pd.DataFrame(list(items.items()), columns=["Alt Tür", "Emisyon (kg CO2)"])
             st.dataframe(df, use_container_width=True)
 
@@ -331,7 +375,7 @@ with tab3:
         st.dataframe(df_summary, use_container_width=True)
 
         st.metric("Toplam Karbon Ayak İzi", f"{results['Toplam']:.2f} kg CO2")
-        st.metric("Kişi Başına Düşen Toplam Karbon Ayak İzi", f"{results['kisibasi']:.2f} kg CO2")
+        st.metric("Kişi Başına Düşen Toplam Karbon Ayak İzi", f"{results['Kisi Basi']:.2f} kg CO2")
 
         # veri görselleştirme
         fig, ax = plt.subplots()
@@ -359,9 +403,19 @@ with tab3:
                     st.markdown(f"-{i}")
         ##
         st.subheader("📝 Raporu İndir")
-        df_report = pd.DataFrame([results])
-        csv = df_report.to_csv(index=False).encode('utf-8')
-        st.download_button("Raporu CSV Olarak İndir", data=csv, file_name="karbon_raporu.csv", mime="text/csv")
+        pdf_data = save_as_pdf(
+            results=st.session_state.latest_result,
+            category_footprints=st.session_state.latest_categories,
+            recommendations=ai_rec,
+            logo_path="logo.png"
+        )
+
+        st.download_button(
+            label="📄 PDF İndir",
+            data=pdf_data,
+            file_name=f"{results['Company'].replace(' ', '_')}_karbon_raporu.pdf",
+            mime="application/pdf"
+        )
     else:
         st.info("Önce hesaplama yapın.")
 
@@ -369,7 +423,7 @@ with tab3:
 # Scoreboard Sekmesi
 
 with tab4:
-    st.header("🏆 Scoreboard")
+    st.subheader("🏆 Scoreboard")
     if st.session_state.scoreboard:
         df_scoreboard = pd.DataFrame(st.session_state.scoreboard)
         df_sorted = df_scoreboard.sort_values("Toplam").reset_index(drop=True)
