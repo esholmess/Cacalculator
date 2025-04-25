@@ -166,7 +166,7 @@ with tab1: #ana sayfa
             flex-direction: column;
             align-items:center;
             justify-content:center;
-            font-size:15px;
+            font-size:10px;
             width:70vw;
             
             
@@ -373,8 +373,8 @@ with tab3:
         results = st.session_state.latest_result
 
         st.markdown(f"""
-        <h2 style='text-align: center; color:#2ECC71'>{results["Company"]} 🚀</h2>
-        <p style='text-align: center; font-size: 18px;'>📅 Tarihli Karbon Ayak İzi Raporu</p>
+        <h2 style='color:#2ECC71'>{results["Company"]} 🚀</h2>
+        <p style='font-size: 18px;'>📅 {results["Tarih"]} Tarihli Karbon Ayak İzi Raporu</p>
         """, unsafe_allow_html=True)
 
         # Emisyon detayları + grafik
