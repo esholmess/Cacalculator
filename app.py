@@ -65,7 +65,7 @@ st.markdown(
 
 
     </style>
-    <h2 style="margin-bottom: -40px">🍂KARBON<span style="color:rgb(255, 225, 183)">AT</span></h2>
+    <h2 style="margin-bottom: -40px">🌿KARBON<span style="color:yellow">AT</span></h2>
     
 """, unsafe_allow_html = True
 )
@@ -139,10 +139,12 @@ with tab1: #ana sayfa
     <style>
        
         .stMarkdown div {
-            border-radius: 10px;
+            border-radius: 5px;
             margin-bottom: 1rem;
             transition: transform 0.2s ease-in-out;
             color: white;  
+            margin-top: 0.7rem;
+            
         }
         .stMarkdown div:hover {
             transform: translateY(-1px);
@@ -156,14 +158,15 @@ with tab1: #ana sayfa
         .banner {
             text-align: justify;
             padding: 2rem;
-            background: linear-gradient(45deg, #28a74683, #11a0758f);
+            background: linear-gradient(45deg, #28a7462b, #11a0753d);  
+            border: 1px solid #28a745;
             color: white;
             border-radius: 10px;
             display:flex;
             flex-direction: column;
             align-items:center;
             justify-content:center;
-            font-size:15px;
+            font-size:10px;
             width:70vw;
             
             
@@ -197,7 +200,12 @@ with tab1: #ana sayfa
 
 
         #guide h3{
-                margin-bottom: -30px}
+                margin-bottom: -30px
+                }
+
+        .banner h3 {
+                margin-bottom: -10px;
+                margin-top: -10px;}
 
     </style>
     <div class="banner-container">
@@ -341,7 +349,8 @@ with tab2: #hesap makinesi sekmesi
             "Company": company_name,
             **category_footprints,
             "Toplam": total_footprint,
-            "Kisi Basi" : footprint_kisibasi
+            "Kisi Basi" : footprint_kisibasi,
+            "Tarih": date_input
         }
         st.session_state.latest_inputs = user_inputs
         st.session_state.latest_categories = category_footprints
@@ -352,57 +361,88 @@ with tab2: #hesap makinesi sekmesi
         st.error("İşletme İsminizi Giriniz")
     elif hesapla and not customer_number:
         st.error("Müşteri sayısını giriniz - Müşteri sayısı en az 1 olmalıdır.")
+    
 
 
 # Raporlar ve Öneriler Sekmesi
 
 with tab3:
+    st.subheader("📊 Raporlar ve Öneriler")
+
     if 'latest_result' in st.session_state:
         results = st.session_state.latest_result
-        st.header(results["Company"] + " 🚀")
-        st.header("Karbon Ayak İzi Raporu")
 
+        st.markdown(f"""
+        <h2 style='text-align: center; color:#2ECC71'>{results["Company"]} 🚀</h2>
+        <p style='text-align: center; font-size: 18px;'>📅 Tarihli Karbon Ayak İzi Raporu</p>
+        """, unsafe_allow_html=True)
+
+        # Emisyon detayları + grafik
+        st.markdown("## 📊 Detaylı Emisyon Verileri (Alt Tür Bazlı)")
         for category, items in st.session_state.latest_inputs.items():
-            st.markdown(f"#### {category}")
-            df = pd.DataFrame(list(items.items()), columns=["Alt Tür", "Emisyon (kg CO2)"])
-            st.dataframe(df, use_container_width=True)
+            with st.expander(f"📁 {category}", expanded=False):
+                df = pd.DataFrame(list(items.items()), columns=["Alt Tür", "Emisyon (kg CO2)"])
+                st.dataframe(df, use_container_width=True)
 
+                # Grafik
+                fig, ax = plt.subplots(figsize=(6, 3), facecolor='black')
+                bars = ax.bar(df["Alt Tür"], df["Emisyon (kg CO2)"], color='#2ECC71')  # yeşil
+                ax.set_facecolor('black')
+                ax.set_ylabel("CO2 (kg)", color='white')
+                ax.set_title(f"{category} - Alt Tür Emisyonları", color='white')
+                ax.tick_params(axis='x', rotation=45, labelcolor='white')
+                ax.tick_params(axis='y', labelcolor='white')
+                ax.spines[:].set_color('white')
+                st.pyplot(fig)
+
+        # Kategori özeti
         df_summary = pd.DataFrame({
             "Kategori": list(st.session_state.latest_categories.keys()),
             "Toplam Emisyon (kg CO2)": list(st.session_state.latest_categories.values())
         })
-        st.markdown("### Kategori Bazlı Toplam Emisyon")
+
+        st.markdown("## 🔎 Kategori Bazlı Toplam Emisyon")
+
         st.dataframe(df_summary, use_container_width=True)
-
-        st.metric("Toplam Karbon Ayak İzi", f"{results['Toplam']:.2f} kg CO2")
-        st.metric("Kişi Başına Düşen Toplam Karbon Ayak İzi", f"{results['Kisi Basi']:.2f} kg CO2")
-
-        # veri görselleştirme
-        fig, ax = plt.subplots()
-        ax.bar(df_summary["Kategori"], df_summary["Toplam Emisyon (kg CO2)"])
-        ax.set_ylabel("CO2 (kg)")
-        ax.set_title("Kategoriye Göre Karbon Ayak İzi")
+    
+        fig, ax = plt.subplots(figsize=(6, 4), facecolor='black')
+        ax.barh(df_summary["Kategori"], df_summary["Toplam Emisyon (kg CO2)"], color='#27AE60')  # koyu yeşil
+        ax.set_xlabel("CO2 (kg)", color='white')
+        ax.set_title("Kategoriye Göre Karbon Ayak İzi", color='white')
+        ax.tick_params(axis='x', labelcolor='white')
+        ax.tick_params(axis='y', labelcolor='white')
+        ax.set_facecolor('black')
+        ax.spines[:].set_color('white')
         st.pyplot(fig)
 
-        st.subheader("💡 Öneriler")
+        # Özet metrikler
+        st.markdown("## 📌 Emisyon Özeti")
+        col3, col4 = st.columns(2)
+        col3.metric("Toplam Karbon Ayak İzi", f"{results['Toplam']:.2f} kg CO2")
+        col4.metric("Kişi Başına Düşen", f"{results['Kisi Basi']:.2f} kg CO2")
+
+        # Genel öneriler
+        st.markdown("## 💡 Genel Öneriler")
         for rec in get_general_recommendations(results["Toplam"]):
             st.markdown(f"- {rec}")
-        st.write("İlerleyen süreçte aktif:")
-        ai_button = st.button("Öneri Üret AI ile 🧠")
-        #ai button function
-        ai_rec =[
-                "🌱 Karbon dengeleme (offset) projelerine yatırım yapın.",
-                "🚲 Personel için bisiklet paylaşım sistemleri kurun.",
-                "🏭 Enerji tüketiminizi düzenli olarak izleyin ve raporlayın."
+
+        # Yapay zeka önerileri
+        st.markdown("## 🤖 AI Tabanlı Öneriler")
+        ai_button = st.button("AI ile Öneri Üret 🧠")
+        ai_rec = [
+            "🌱 Karbon dengeleme (offset) projelerine yatırım yapın.",
+            "🚲 Personel için bisiklet paylaşım sistemleri kurun.",
+            "🏭 Enerji tüketiminizi düzenli olarak izleyin ve raporlayın."
         ]
-        if ai_button :
+        if ai_button:
             with st.spinner("Yapay zeka öneriler üretiyor..."):
                 time.sleep(2)
-                st.success("İlave öneriler: ")
+                st.success("İlave öneriler üretildi:")
                 for i in ai_rec:
-                    st.markdown(f"-{i}")
-        ##
-        st.subheader("📝 Raporu İndir")
+                    st.markdown(f"- {i}")
+
+        # PDF çıktısı
+        st.markdown("## 📝 Raporu PDF Olarak İndir")
         pdf_data = save_as_pdf(
             results=st.session_state.latest_result,
             category_footprints=st.session_state.latest_categories,
@@ -417,7 +457,8 @@ with tab3:
             mime="application/pdf"
         )
     else:
-        st.info("Önce hesaplama yapın.")
+        st.info("📌 Lütfen önce hesaplama yapın.")
+    
 
 
 # Scoreboard Sekmesi
