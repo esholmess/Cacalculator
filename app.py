@@ -6,44 +6,9 @@ import matplotlib.pyplot as plt
 import json
 from downloadpdf import save_as_pdf
 import datetime
-# -------------------------
-# Emisyon Faktörleri (kg CO2) - Referans Tablosu Verileri
-# -------------------------
-emission_factors = {
-    "Elektrik": {
-        "Rüzgar Enerjisi": 0.233,
-        "Fosil Yakıt (TR ORT)": 0.478,
-        "Güneş Enerjisi": 0.012,
-        "Hidro Elektrik": 0.048
-    },
-    "Doğal Gaz": {
-        "Doğal Gaz": 2.02,
-        "LNG": 2.75,
-        "Biyogaz": 0.5,
-        "Propan": 2.98
-    },
-    "Su": {
-        "Su Kullanımı": 0.422,
-        "Deniz suyu arıtma": 1.5,
-        "Atık su arıtma": 0.8
-    },
-    "Atık Yönetimi": {
-        "Organik Atık": 0.5,
-        "Plastik Atık": 3.5,
-        "Cam": 0.33,
-        "Kağıt": 0.2,
-        "Metal": 2.0
-    },
-    "Gıda Tüketimi": {
-        "Kırmızı Et": 27,
-        "Tavuk": 6,
-        "Balık":5,
-        "Sebze":2,
-        "Süt":1.5,
-        "Peynir":10,
-        "Ekmek/Unlu Mamülleri":1
-    }
-}
+from factors import emission_factors
+from oneri_fonksiyonları import get_general_recommendations
+import google.generativeai as genai
 
 
 st.set_page_config(page_title="KARBON-AT", page_icon="🌍", layout="wide") #sayfa ayarı
@@ -62,6 +27,20 @@ st.markdown(
         background:linear-gradient(to top, #006d57, #255F38); 
         color: #015551
         }
+    .stTabs [data-baseweb="tab"] {
+        font-size: 20px;
+        color: #4CAF50; 
+        padding: 5px 7px;
+        margin: 15px -10px 1px 0px;
+        border-radius: 3px;
+        border: 1px solid #4caf4f64; 
+        min-width: 10vw;
+    }
+
+    .stTabs [aria-selected="true"] {
+        color: white;
+        border-color: red 
+    }
 
 
     </style>
@@ -79,14 +58,15 @@ with st.sidebar: #sidebar ayarları
     """)
     st.markdown("""
         <style>
-                #sidebarh3{
-                margin-top: -5px;
-                }
-                #sidebarul{
-                margin-right:25px;
-                text-align:justify
-                }
-                </style>
+            #sidebarh3{
+            margin-top: -5px;
+            }
+            #sidebarul{
+            margin-right:25px;
+            text-align:justify
+            }
+                
+            </style>
         <h3 id="sidebarh3">KarbonAT'ı kullanmaya başla:</h3><p>
         <ul id="sidebarul">
         <li> Sizden istenen verileri aylık harcama raporlarınıza dayanarak giriniz. (Örn: Su faturası)</li>
@@ -102,33 +82,6 @@ with st.sidebar: #sidebar ayarları
 
 if 'scoreboard' not in st.session_state:
     st.session_state.scoreboard = []
-
-# -------------------------
-# Geri Bildirim Fonksiyonları
-# -------------------------
-def get_general_recommendations(total):
-    recommendations = []
-    if total < 4000:
-        recommendations.extend([
-            "🌞 Güneş enerjisine geçmeyi değerlendirin.",
-            "💻 Video konferans sistemlerini daha sık kullanın.",
-            "♻️ Mevcut tasarruf ve geri dönüşüm uygulamalarınızı sürdürün."
-        ])
-    elif 4000 < total < 10000:
-        recommendations.extend([
-            "💡 LED aydınlatma sistemleri kullanın.",
-            "🚛 Tedarik zincirinizde yerel üreticilere öncelik verin.",
-            "🥗 Gıda israfını azaltacak planlamalar yapın."
-        ])
-    else:
-        recommendations.extend([
-            "🌱 Karbon dengeleme (offset) projelerine yatırım yapın.",
-            "🚲 Personel için bisiklet paylaşım sistemleri kurun.",
-            "🏭 Enerji tüketiminizi düzenli olarak izleyin ve raporlayın."
-        ])
-    return recommendations
-
-
 
 tab1, tab2, tab3, tab4 = st.tabs(["🏠", "Hesap Makinesi", "Rapor & Öneriler", "🏆"]) #sekmeler
 
@@ -166,7 +119,7 @@ with tab1: #ana sayfa
             flex-direction: column;
             align-items:center;
             justify-content:center;
-            font-size:15px;
+            font-size:10px;
             width:70vw;
             
             
@@ -330,19 +283,32 @@ with tab2: #hesap makinesi sekmesi
                 user_inputs["Atık Yönetimi"][item] = footprint
                 atik_total += footprint
 
+                
+        with st.expander("🧪 Kimyasal Tüketimi"):
+            kimyasal_total = 0
+            user_inputs["Kimyasal Tüketimi"] = {}
+            for item, factor in emission_factors["Kimyasal Tüketimi"].items():
+                amount = st.number_input(f"{item} (L)", min_value=0.0, value=0.0, key="Kimyasal_" + item)
+                footprint = amount * factor
+                user_inputs["Kimyasal Tüketimi"][item] = footprint
+                kimyasal_total += footprint
+
 
 
         hesapla = st.form_submit_button("🌍 Karbon Ayak İzini Hesapla") # verileri gönderme (submitleme) butonu
 
     if hesapla and company_name:
-        total_footprint = elektrik_total + gaz_total + su_total + atik_total + gida_total
+        total_footprint = elektrik_total + gaz_total + su_total + atik_total + gida_total + kimyasal_total
         footprint_kisibasi =  total_footprint / customer_number
+        footprint_m2 = total_footprint / metrekare_number
+        footprint_oda = total_footprint / room_number
         category_footprints = {
             "Elektrik": elektrik_total,
             "Doğal Gaz": gaz_total,
             "Su": su_total,
             "Atık Yönetimi": atik_total,
-            "Gıda Tüketimi": gida_total
+            "Gıda Tüketimi": gida_total,
+            "Kimyasal Tüketimi": kimyasal_total
         }
 
         st.session_state.latest_result = {
@@ -350,12 +316,14 @@ with tab2: #hesap makinesi sekmesi
             **category_footprints,
             "Toplam": total_footprint,
             "Kisi Basi" : footprint_kisibasi,
+            "Metrekare Basi" : footprint_m2,
+            "Oda Basi" : footprint_oda, 
             "Tarih": date_input
         }
         st.session_state.latest_inputs = user_inputs
         st.session_state.latest_categories = category_footprints
         st.session_state.scoreboard.append(st.session_state.latest_result)
-        st.success("✅ Karbon ayak izi başarıyla hesaplandı!")
+        st.success("✅ Karbon ayak izi başarıyla hesaplandı! Raporlar ve Öneriler sekmesine geçerek raporunuzu görüntüleyin!.")
 
     elif hesapla and not company_name:
         st.error("İşletme İsminizi Giriniz")
@@ -374,7 +342,7 @@ with tab3:
 
         st.markdown(f"""
         <h2 style='color:#2ECC71'>{results["Company"]} 🚀</h2>
-        <p style='font-size: 18px;'>📅 {results["Tarih"]} Tarihli Karbon Ayak İzi Raporu</p>
+        <p style='font-size: 18px; margin-top:-10px'>📅 {results["Tarih"]} Tarihli Karbon Ayak İzi Raporu</p>
         """, unsafe_allow_html=True)
 
         # Emisyon detayları + grafik
@@ -421,32 +389,57 @@ with tab3:
         col3.metric("Toplam Karbon Ayak İzi", f"{results['Toplam']:.2f} kg CO2")
         col4.metric("Kişi Başına Düşen", f"{results['Kisi Basi']:.2f} kg CO2")
 
-        # Genel öneriler
-        st.markdown("## 💡 Genel Öneriler")
-        for rec in get_general_recommendations(results["Toplam"]):
-            st.markdown(f"- {rec}")
+        col5, col6 = st.columns(2)
+        col5.metric("Oda Başına Düşen", f"{results['Oda Basi']:.2f} kg CO2")
+        col6.metric("Metrekare Başına Düşen", f"{results['Metrekare Basi']:.2f} kg CO2")
 
-        # Yapay zeka önerileri
-        st.markdown("## 🤖 AI Tabanlı Öneriler")
-        ai_button = st.button("AI ile Öneri Üret 🧠")
-        ai_rec = [
-            "🌱 Karbon dengeleme (offset) projelerine yatırım yapın.",
-            "🚲 Personel için bisiklet paylaşım sistemleri kurun.",
-            "🏭 Enerji tüketiminizi düzenli olarak izleyin ve raporlayın."
-        ]
-        if ai_button:
-            with st.spinner("Yapay zeka öneriler üretiyor..."):
-                time.sleep(2)
-                st.success("İlave öneriler üretildi:")
-                for i in ai_rec:
-                    st.markdown(f"- {i}")
 
+        #AI
+
+        # --- API ANAHTARI ---
+        genai.configure(api_key=st.secrets["gemini_api_key"])
+
+        # --- MODELİ TANIMLA ---
+        model = genai.GenerativeModel("gemini-1.5-flash")
+        emission =  results["Toplam"]
+
+        prompt = f"""
+        Benim karbon ayak izim {emission:.2f} kg CO₂.
+        Ben bir turizm işletmesiyim. Bu değeri bir cümle ile analiz et.
+        Türkçe yanıtla.
+        """
+
+        try:
+            response = model.generate_content(prompt)
+            st.subheader("📉 Öneriler")
+            st.write(response.text)
+
+        except Exception as e:
+            st.error(f"Hata oluştu: {e}")
+        
+        ai_rec = st.button("Daha Fazla Öneri Al")
+        if ai_rec:
+                    prompt = f"""
+        Benim karbon ayak izim {emission:.2f} kg CO₂.
+        Ben bir turizm işletmesiyim. Bu değeri azaltmak için bana kısa, 
+        uygulanabilir, sektörel bir öneri ver. Kısa bir yol haritası öner.
+        Maksimum 10 satır olmalı.
+        Türkçe yanıtla.
+        """
+                    try:
+                        response = model.generate_content(prompt)
+                        st.subheader("📉 Ekstra Öneriler")
+                        st.write(response.text)
+
+                    except Exception as e:
+                        st.error(f"Hata oluştu: {e}")
+            
         # PDF çıktısı
         st.markdown("## 📝 Raporu PDF Olarak İndir")
         pdf_data = save_as_pdf(
             results=st.session_state.latest_result,
             category_footprints=st.session_state.latest_categories,
-            recommendations=ai_rec,
+            recommendations= response.text.split("\n"),
             logo_path="logo.png"
         )
 
