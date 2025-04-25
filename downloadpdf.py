@@ -14,7 +14,7 @@ def save_as_pdf(results, category_footprints, recommendations, logo_path=None):
     y = height - 50
 
     c.setFont("DejaVu", 14)
-    c.drawString(50, y, f"{results['Company']} - Karbon Ayak İzi Raporu")
+    c.drawString(50, y, f"{results['Company']} | {results['Tarih']} Tarihli Karbon Ayak İzi Raporu")
     y -= 40
 
     c.setFont("DejaVu", 12)
