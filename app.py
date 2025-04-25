@@ -27,20 +27,20 @@ st.markdown(
         background:linear-gradient(to top, #006d57, #255F38); 
         color: #015551
         }
-    .stTabs [data-baseweb="tab"] {
-        font-size: 20px;
-        color: #4CAF50; 
-        padding: 5px 7px;
-        margin: 15px -10px 1px 0px;
-        border-radius: 3px;
-        border: 1px solid #4caf4f64; 
-        min-width: 10vw;
-    }
-
-    .stTabs [aria-selected="true"] {
-        color: white;
-        border-color: red 
-    }
+        .stTabs [data-baseweb="tab"] {
+            font-size: 20px;
+            color: #4CAF50; 
+            padding: 5px 7px;
+            margin: 15px -10px 1px 0px;
+            border-radius: 3px;
+            border: 1px solid #4caf4f64; 
+            min-width: 10vw;
+        }
+    
+        .stTabs [aria-selected="true"] {
+            color: white;
+            border-color: red 
+        }
 
 
     </style>
