@@ -16,7 +16,7 @@ st.markdown(
     """
     <style>
         [data-testid="stAppViewContainer"] {
-            background: linear-gradient(to bottom, black 70%, green);
+        background: linear-gradient(to bottom, black 70%, #255F38);
         }
 
         p, h1, h2, h3, h4, h5, h6, ul {
