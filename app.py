@@ -15,9 +15,10 @@ st.set_page_config(page_title="KARBON-AT", page_icon="🌍", layout="wide") #say
 st.markdown(
     """
     <style>
-        .main{
-        background: linear-gradient(to bottom, black 70%, green);
+        [data-testid="stAppViewContainer"] {
+            background: linear-gradient(to bottom, black 70%, green);
         }
+
         p, h1, h2, h3, h4, h5, h6, ul {
             color: white;
             font-family: 'Segoe UI', sans-serif;
