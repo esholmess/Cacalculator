@@ -16,8 +16,7 @@ st.markdown(
     """
     <style>
         .main{
-        background: linear-gradient(45deg, black, #18230F);
-        
+        background: linear-gradient(to bottom, black 70%, green);
         }
         p, h1, h2, h3, h4, h5, h6, ul {
             color: white;
